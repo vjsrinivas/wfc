@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[1]:
-
-
 import os
 import sys
 import time
@@ -12,11 +6,13 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+from qiskit import BasicAer   
 
-from utils import *
 import imageio
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
+
+from utils.tiles import *
 
 
 original = cv2.imread('resources/wfc-circuit-1.png')
@@ -25,6 +21,7 @@ start = 107
 end = 121
 tiles = []
 idx = 0
+
 for i in range(13):
     tile = Tile(original[start:end, :14, :], idx)
     idx += 1
@@ -92,10 +89,6 @@ for tile in tiles:
         neighbor_set = tile.neighbors[key]
         tile.exclusions[key] = set(tile_idx_list) - set(neighbor_set)
 
-
-
-
-# np.random.seed(2)
 rows = 6
 cols = 10
 history = []
@@ -148,8 +141,7 @@ image = np.zeros(shape = (14*rows, 14*cols, 3))
 for row in range(rows):
     for col in range(cols):
         image[row*14:(row+1)*14, col*14:(col+1)*14, :] = tiles[int(info['canvas'][row, col])].img
-plt.figure(figsize=(6, 4))
-plt.imshow(image/255.0)
+
 np.save('output/history_full.npy', info_history_full)
 np.save('output/history.npy', info_history)
 
@@ -171,9 +163,12 @@ for info in info_history_full:
     image = image.astype(np.uint8)
     out.write(image)
     images.append(image)
+
 for i in range(2 * fps):
     out.write(image.astype(np.uint8))
     images.append(image)
+
+
 out.release()
 imageio.mimsave('output/wfc-circuit.gif', images)
 

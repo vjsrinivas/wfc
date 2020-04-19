@@ -17,7 +17,7 @@ usage:
 
     q_gen = random_gen(5, backend)
 
-    choice = q_gen.rand_choice(array)
+    choice = q_gen.choice(array)
 
 """
 
@@ -42,7 +42,7 @@ class random_gen():
         
         return num
     
-    def rand_choice(self, array):
+    def choice(self, array):
         mx = len(array)
         selected = array[self.rand_int() % mx]
         return selected

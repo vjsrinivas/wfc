@@ -8,6 +8,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+from qiskit import BasicAer
+from utils.rand_gen import random_gen
+backend = BasicAer.get_backend("qasm_simulator")
+q_gen = random_gen(1, backend)
+
+
 class Tile():
     def __init__(self, img, idx):
         self.img = img
@@ -105,7 +111,8 @@ def get_min_entropy_coord(entropy_board, observed):
                 elif 1 <= entropy_board[row, col] == min_entropy:
                     coord_list.append((row, col))
     if len(coord_list) > 0:
-        coord_idx = np.random.choice(np.arange(len(coord_list)))
+        coord_idx = q_gen.choice(np.arange(len(coord_list)))
+        # coord_idx = np.random.choice(np.arange(len(coord_list)))
         min_row, min_col = coord_list[coord_idx]
         return min_row, min_col
     else:
@@ -135,7 +142,10 @@ def step(info, row_col = None):
         row, col = row_col
     else:
         row, col = get_min_entropy_coord(entropy_board, observed)
-    state = np.random.choice(choices[(row,  col)])
+
+    state = q_gen.choice(choices[(row,  col)])
+    # state = np.random.choice(choices[(row,  col)])
+
     history.append((row, col, state, choices[(row,  col)]))
     choices_temp = deepcopy(choices)
     choices_temp[(row, col)] = [state]
