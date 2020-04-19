@@ -1,5 +1,3 @@
 
-*.npy
+*.ipynb_checkpoints
 *.pyc
-*.mp4
-*.gif
