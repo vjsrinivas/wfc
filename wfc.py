@@ -185,4 +185,4 @@ for i in range(2 * fps):
 
 out.release()
 imageio.mimsave('output/wfc-circuit.gif', images)
-
+cv2.imwrite('output/final.png', images[-1])
