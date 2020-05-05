@@ -8,9 +8,25 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-from qiskit import BasicAer
+from qiskit import BasicAer, IBMQ
 from utils.rand_gen import random_gen
-backend = BasicAer.get_backend("qasm_simulator")
+
+########### Calling Quantum Computer######
+
+api_file = open("API_token.txt", "r")
+api_key = ""
+if api_file.mode == 'r':
+    api_key = api_file.read()
+    #print("API_key: ", api_key)
+
+IBMQ.save_account(api_key)
+provider = IBMQ.load_account()
+backend = provider.get_backend('ibmq_essex')  #select which machine
+
+##########################################
+
+#backend = BasicAer.get_backend("qasm_simulator")  #simulator
+
 q_gen = random_gen(1, backend)
 
 
