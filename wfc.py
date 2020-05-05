@@ -14,21 +14,36 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 from utils.tiles import *
 
+if len(sys.argv) > 1:
+    imagePath = sys.argv[1]
+else:
+    imagePath = 'resources/example.png'
 
-original = cv2.imread('resources/wfc-circuit-1.png')
-
-start = 107
-end = 121
+#original = cv2.imread('resources/wfc-circuit-1.png')
+original = cv2.imread(imagePath)
+#start = 107
+#end = 121
 tiles = []
 idx = 0
 
+# Assume tiles are always square:
+tile_width, img_height = original.shape[1], original.shape[0]
+total_tiles = img_height//tile_width
+print("total tiles: ", total_tiles)
+
+for i in range(total_tiles):
+    tile = Tile(original[idx*tile_width:(idx+1)*tile_width,:tile_width,:], idx)
+    tiles.append(tile)
+    idx += 1
+
+'''
 for i in range(13):
     tile = Tile(original[start:end, :14, :], idx)
     idx += 1
     start += 16
     end += 16
     tiles.append(tile)
-
+'''
 
 # rotate and flip tiles to augment data
 num_tiles = len(tiles)
@@ -38,6 +53,7 @@ for i in range(num_tiles):
     img90 = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
     img180 = cv2.rotate(img, cv2.ROTATE_180)
     img270 = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    
     if not np.all(img90 == img):
         new_tile = Tile(img90, idx)
         idx += 1
@@ -50,8 +66,6 @@ for i in range(num_tiles):
         new_tile = Tile(img270, idx)
         idx += 1
         tiles.append(new_tile)
-
-
 
 for i in range(len(tiles)):
     for j in range(i, len(tiles)):
